@@ -14,29 +14,29 @@ class RsvpPortalAndMonetizationWidget extends StatefulWidget {
 class _RsvpPortalAndMonetizationWidgetState
     extends State<RsvpPortalAndMonetizationWidget> {
   bool _isJoyfullyAccepting = true;
+  
+  String _selectedEvent = 'Traditional Wedding (Aug 4 - Open Feast)';
   String _affiliation = 'The Okafor Family (Bride)';
   String _guestCount = '1 Guest (Single Seat)';
   
+  final List<Map<String, TextEditingController>> _additionalGuests = [];
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dietaryController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _customAmountController = TextEditingController();
   
+  final TextEditingController _groupContextNameController = TextEditingController();
+
   final TextEditingController _declinedNameController = TextEditingController();
   final TextEditingController _declinedContactController = TextEditingController();
   final TextEditingController _declinedNoteController = TextEditingController();
-  final TextEditingController _declinedCustomAmountController = TextEditingController();
 
   int _selectedTokenAmount = 10000;
   bool _isCustomAmount = false;
   bool _isInstantGatewayMode = true; 
   String _selectedBank = 'Opay Digital Services (9012345678)';
   String _selectedDeclinedAffiliation = 'The Okafor Family (Bride)';
-  
-  int _declinedTokenAmount = 10000;
-  bool _declinedIsCustomAmount = false;
-  bool _declinedIsInstantGatewayMode = true;
-  String _declinedSelectedBank = 'Opay Digital Services (9012345678)';
 
   @override
   void dispose() {
@@ -44,22 +44,51 @@ class _RsvpPortalAndMonetizationWidgetState
     _dietaryController.dispose();
     _noteController.dispose();
     _customAmountController.dispose();
+    _groupContextNameController.dispose();
     _declinedNameController.dispose();
     _declinedContactController.dispose();
     _declinedNoteController.dispose();
-    _declinedCustomAmountController.dispose();
+    for (var guest in _additionalGuests) {
+      guest['name']?.dispose();
+      guest['dietary']?.dispose();
+    }
     super.dispose();
   }
 
-  void _copyToClipboard(String text, String label) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$label copied to clipboard!'),
-        backgroundColor: ThemeColors.imperialBurgundySolid,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+  void _addDelegateMember() {
+    setState(() {
+      _additionalGuests.add({
+        'name': TextEditingController(),
+        'dietary': TextEditingController(),
+      });
+    });
+  }
+
+  void _removeDelegateMember(int index) {
+    setState(() {
+      _additionalGuests[index]['name']?.dispose();
+      _additionalGuests[index]['dietary']?.dispose();
+      _additionalGuests.removeAt(index);
+    });
+  }
+
+  void _syncAdditionalGuestsCount(String tier) {
+    _additionalGuests.clear();
+    int targetCount = 0;
+    if (tier.contains('2 Guests')) {
+      targetCount = 1; 
+    } else if (tier.contains('Family Table')) {
+      targetCount = 3; 
+    } else if (tier.contains('Church / Delegation')) {
+      targetCount = 3; 
+    }
+
+    for (int i = 0; i < targetCount; i++) {
+      _additionalGuests.add({
+        'name': TextEditingController(),
+        'dietary': TextEditingController(),
+      });
+    }
   }
 
   void _addDietaryTag(String tag) {
@@ -77,6 +106,8 @@ class _RsvpPortalAndMonetizationWidgetState
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isMobile = size.width < 800;
+    final isWhiteWedding = _selectedEvent.contains('White Wedding');
+    final needsAdditionalGuestsForm = !_guestCount.contains('1 Guest') && !isWhiteWedding;
 
     return Scaffold(
       backgroundColor: ThemeColors.midnightVelvet,
@@ -105,7 +136,7 @@ class _RsvpPortalAndMonetizationWidgetState
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/Royal_order.jpg',
+              'assets/images/Rsvp.jpg',
               fit: BoxFit.cover,
             ),
           ),
@@ -162,7 +193,7 @@ class _RsvpPortalAndMonetizationWidgetState
                           border: Border.all(color: ThemeColors.goldLeaf.withValues(alpha: 0.5)),
                         ),
                         child: Text(
-                          'Kindly reply before December 15, 2026, so we may properly welcome you.',
+                          'Kindly reply before oct 05, 2026. You can return to update your seating count up to one month before the event.',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 12.0,
                             color: ThemeColors.champagneSilk,
@@ -172,6 +203,7 @@ class _RsvpPortalAndMonetizationWidgetState
                       ),
                       const SizedBox(height: 28.0),
                       
+                      // ATTENDANCE STATUS
                       _buildLiquidGlassContainer(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,35 +279,298 @@ class _RsvpPortalAndMonetizationWidgetState
                                 ),
                               ),
                               const SizedBox(height: 20.0),
-                              _buildFieldLabel('FULL NAME'),
+                              
+                              // EVENT SELECTOR
+                              _buildFieldLabel('SELECT EVENT DAY'),
+                              const SizedBox(height: 6.0),
+                              _buildDropdownContainer(
+                                value: _selectedEvent,
+                                items: const [
+                                  'Traditional Wedding (Aug 4 - Open Feast)',
+                                  'White Wedding (Aug 5 - Exclusive/Invite Only)',
+                                ],
+                                onChanged: (val) {
+                                  setState(() {
+                                    _selectedEvent = val!;
+                                    if (_selectedEvent.contains('White Wedding')) {
+                                      _guestCount = '1 Guest (Single Seat)';
+                                      _additionalGuests.clear();
+                                    }
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 12.0),
+                              
+                              if (isWhiteWedding)
+                                Container(
+                                  padding: const EdgeInsets.all(12.0),
+                                  decoration: BoxDecoration(
+                                    color: ThemeColors.goldLeaf.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(color: ThemeColors.goldLeaf.withValues(alpha: 0.4)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.verified_user_outlined, color: ThemeColors.goldLeaf, size: 20.0),
+                                      const SizedBox(width: 10.0),
+                                      Expanded(
+                                        child: Text(
+                                          'Note: White Wedding seating is strictly restricted to designated invitees and max 1 partner per invitation code.',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 11.0,
+                                            color: ThemeColors.champagneSilk,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              if (isWhiteWedding) const SizedBox(height: 20.0),
+
+                              _buildFieldLabel('LEADER / REPRESENTATIVE FULL NAME'),
                               const SizedBox(height: 6.0),
                               _buildTextField(_nameController, 'Lord / Lady Full Name', Icons.person_outline),
                               const SizedBox(height: 20.0),
-                              _buildFieldLabel('MARCHING WITH (FAMILY)'),
+                              
+                              _buildFieldLabel('GUEST AFFILIATION / TIER'),
                               const SizedBox(height: 6.0),
                               _buildDropdownContainer(
                                 value: _affiliation,
                                 items: const [
                                   'The Okafor Family (Bride)',
                                   'The Ekuma Family (Groom)',
+                                  'Church Delegation / Group',
+                                  'Colleagues & Corporate Friends',
                                   'Mutual Friend / Guest',
                                 ],
                                 onChanged: (val) => setState(() => _affiliation = val!),
                               ),
                               const SizedBox(height: 20.0),
-                              _buildFieldLabel('NUMBER OF GUESTS'),
+                              
+                              // NUMBER OF SEATS REQUIRED
+                              _buildFieldLabel('NUMBER OF SEATS REQUIRED'),
                               const SizedBox(height: 6.0),
                               _buildDropdownContainer(
                                 value: _guestCount,
-                                items: const [
-                                  '1 Guest (Single Seat)',
-                                  '2 Guests (Couple / Plus One)',
-                                  'Family Table (Up to 4)',
-                                ],
-                                onChanged: (val) => setState(() => _guestCount = val!),
+                                items: isWhiteWedding
+                                    ? const [
+                                        '1 Guest (Single Seat)',
+                                        '2 Guests (Couple / Plus One)',
+                                      ]
+                                    : const [
+                                        '1 Guest (Single Seat)',
+                                        '2 Guests (Couple / Plus One)',
+                                        'Family Table (Up to 4)',
+                                        'Church / Delegation Block',
+                                      ],
+                                onChanged: (val) {
+                                  setState(() {
+                                    _guestCount = val!;
+                                    _syncAdditionalGuestsCount(_guestCount);
+                                  });
+                                },
                               ),
                               const SizedBox(height: 20.0),
-                              _buildFieldLabel('DIETARY REQUIREMENTS'),
+
+                              if (needsAdditionalGuestsForm) ...[
+                                Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  decoration: BoxDecoration(
+                                    color: ThemeColors.midnightVelvet.withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(16.0),
+                                    border: Border.all(color: ThemeColors.goldLeaf.withValues(alpha: 0.4)),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (_guestCount.contains('Family Table')) ...[
+                                        Text(
+                                          'FAMILY NAME',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 11.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: ThemeColors.goldLeaf,
+                                            letterSpacing: 1.2,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6.0),
+                                        TextField(
+                                          controller: _groupContextNameController,
+                                          style: const TextStyle(color: ThemeColors.warmIvory, fontSize: 13.0),
+                                          decoration: InputDecoration(
+                                            hintText: 'e.g. The Adebayo Family',
+                                            hintStyle: TextStyle(color: ThemeColors.warmIvory.withValues(alpha: 0.3), fontSize: 13.0),
+                                            isDense: true,
+                                            filled: true,
+                                            fillColor: ThemeColors.midnightVelvet.withValues(alpha: 0.4),
+                                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: const BorderSide(color: ThemeColors.goldLeaf)),
+                                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: ThemeColors.goldLeaf.withValues(alpha: 0.4))),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16.0),
+                                      ] else if (_guestCount.contains('Church / Delegation')) ...[
+                                        Text(
+                                          'ORGANIZATION / CHURCH / INSTITUTION NAME',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 11.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: ThemeColors.goldLeaf,
+                                            letterSpacing: 1.2,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6.0),
+                                        TextField(
+                                          controller: _groupContextNameController,
+                                          style: const TextStyle(color: ThemeColors.warmIvory, fontSize: 13.0),
+                                          decoration: InputDecoration(
+                                            hintText: 'e.g. St. Peters Anglican Church / BlueTag / FUNAAB',
+                                            hintStyle: TextStyle(color: ThemeColors.warmIvory.withValues(alpha: 0.3), fontSize: 13.0),
+                                            isDense: true,
+                                            filled: true,
+                                            fillColor: ThemeColors.midnightVelvet.withValues(alpha: 0.4),
+                                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: const BorderSide(color: ThemeColors.goldLeaf)),
+                                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: ThemeColors.goldLeaf.withValues(alpha: 0.4))),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16.0),
+                                      ],
+
+                                      Wrap(
+                                        alignment: WrapAlignment.spaceBetween,
+                                        crossAxisAlignment: WrapCrossAlignment.center,
+                                        spacing: 8.0,
+                                        runSpacing: 4.0,
+                                        children: [
+                                          Text(
+                                            'SEAT RESERVATIONS (${_additionalGuests.length + 1} Total)',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: ThemeColors.goldLeaf,
+                                              letterSpacing: 1.2,
+                                            ),
+                                          ),
+                                          if (!_guestCount.contains('2 Guests'))
+                                            TextButton.icon(
+                                              onPressed: _addDelegateMember,
+                                              icon: const Icon(Icons.add, size: 16.0, color: ThemeColors.goldLeaf),
+                                              label: Text(
+                                                'Add Member',
+                                                style: GoogleFonts.plusJakartaSans(fontSize: 11.0, color: ThemeColors.goldLeaf),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4.0),
+                                      Text(
+                                        'Please list names and dietary requirements for all guests occupying these seats.',
+                                        style: GoogleFonts.plusJakartaSans(fontSize: 11.0, color: ThemeColors.champagneSilk),
+                                      ),
+                                      const SizedBox(height: 12.0),
+                                      
+                                      Container(
+                                        margin: const EdgeInsets.only(bottom: 12.0),
+                                        padding: const EdgeInsets.all(12.0),
+                                        decoration: BoxDecoration(
+                                          color: ThemeColors.midnightVelvet.withValues(alpha: 0.3),
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          border: Border.all(color: ThemeColors.goldLeaf.withValues(alpha: 0.3)),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Guest #1 (Primary Representative / Leader)',
+                                              style: GoogleFonts.plusJakartaSans(fontSize: 11.0, color: ThemeColors.goldLeaf, fontWeight: FontWeight.bold),
+                                            ),
+                                            const SizedBox(height: 8.0),
+                                            TextField(
+                                              controller: _nameController,
+                                              style: const TextStyle(color: ThemeColors.warmIvory, fontSize: 13.0),
+                                              decoration: InputDecoration(
+                                                hintText: 'Primary Guest Full Name',
+                                                hintStyle: TextStyle(color: ThemeColors.warmIvory.withValues(alpha: 0.3), fontSize: 13.0),
+                                                isDense: true,
+                                                filled: true,
+                                                fillColor: ThemeColors.midnightVelvet.withValues(alpha: 0.4),
+                                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: const BorderSide(color: ThemeColors.goldLeaf)),
+                                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: ThemeColors.goldLeaf.withValues(alpha: 0.4))),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: _additionalGuests.length,
+                                        itemBuilder: (context, index) {
+                                          return Container(
+                                            margin: const EdgeInsets.only(bottom: 12.0),
+                                            padding: const EdgeInsets.all(12.0),
+                                            decoration: BoxDecoration(
+                                              color: ThemeColors.midnightVelvet.withValues(alpha: 0.3),
+                                              borderRadius: BorderRadius.circular(10.0),
+                                              border: Border.all(color: ThemeColors.goldLeaf.withValues(alpha: 0.2)),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      'Guest #${index + 2}',
+                                                      style: GoogleFonts.plusJakartaSans(fontSize: 11.0, color: ThemeColors.goldLeaf, fontWeight: FontWeight.bold),
+                                                    ),
+                                                    if (!_guestCount.contains('2 Guests') && _additionalGuests.length > 1)
+                                                      InkWell(
+                                                        onTap: () => _removeDelegateMember(index),
+                                                        child: const Icon(Icons.close, size: 16.0, color: Colors.redAccent),
+                                                      ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 8.0),
+                                                TextField(
+                                                  controller: _additionalGuests[index]['name'],
+                                                  style: const TextStyle(color: ThemeColors.warmIvory, fontSize: 13.0),
+                                                  decoration: InputDecoration(
+                                                    hintText: 'Guest Full Name',
+                                                    hintStyle: TextStyle(color: ThemeColors.warmIvory.withValues(alpha: 0.3), fontSize: 13.0),
+                                                    isDense: true,
+                                                    filled: true,
+                                                    fillColor: ThemeColors.midnightVelvet.withValues(alpha: 0.4),
+                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: const BorderSide(color: ThemeColors.goldLeaf)),
+                                                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: ThemeColors.goldLeaf.withValues(alpha: 0.4))),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8.0),
+                                                TextField(
+                                                  controller: _additionalGuests[index]['dietary'],
+                                                  style: const TextStyle(color: ThemeColors.warmIvory, fontSize: 13.0),
+                                                  decoration: InputDecoration(
+                                                    hintText: 'Dietary Requirement (e.g. Vegetarian, None)',
+                                                    hintStyle: TextStyle(color: ThemeColors.warmIvory.withValues(alpha: 0.3), fontSize: 13.0),
+                                                    isDense: true,
+                                                    filled: true,
+                                                    fillColor: ThemeColors.midnightVelvet.withValues(alpha: 0.4),
+                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: const BorderSide(color: ThemeColors.goldLeaf)),
+                                                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: ThemeColors.goldLeaf.withValues(alpha: 0.4))),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 20.0),
+                              ],
+                              
+                              _buildFieldLabel('DIETARY REQUIREMENTS (PRIMARY GUEST)'),
                               const SizedBox(height: 6.0),
                               _buildTextField(_dietaryController, 'e.g. No pepper, no shellfish, vegetarian...', Icons.restaurant_menu),
                               const SizedBox(height: 10.0),
@@ -291,6 +586,7 @@ class _RsvpPortalAndMonetizationWidgetState
                                 ],
                               ),
                               const SizedBox(height: 20.0),
+                              
                               _buildFieldLabel('A NOTE TO THE COUPLE'),
                               const SizedBox(height: 6.0),
                               TextField(
@@ -307,29 +603,21 @@ class _RsvpPortalAndMonetizationWidgetState
                                 ),
                               ),
                               const SizedBox(height: 24.0),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: ThemeColors.goldLeaf,
-                                    foregroundColor: ThemeColors.imperialBurgundySolid,
-                                    elevation: 4.0,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
-                                  ),
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('RSVP Submitted Successfully!'), backgroundColor: ThemeColors.imperialBurgundySolid),
-                                    );
-                                  },
-                                  child: Text('SEND MY RSVP', style: GoogleFonts.plusJakartaSans(fontSize: 14.0, fontWeight: FontWeight.bold, letterSpacing: 2.0)),
-                                ),
+                              
+                              NeonGlowingButton(
+                                text: 'SEND MY RSVP',
+                                onPressed: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('RSVP Submitted Successfully to Supabase!'), backgroundColor: ThemeColors.imperialBurgundySolid),
+                                  );
+                                },
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(height: 48.0),
                         
+                        // VIRTUAL BLESSINGS & STORE
                         Text(
                           'VIRTUAL BLESSINGS & STORE',
                           style: GoogleFonts.plusJakartaSans(
@@ -503,7 +791,7 @@ class _RsvpPortalAndMonetizationWidgetState
                                     keyboardType: TextInputType.number,
                                     style: const TextStyle(color: ThemeColors.warmIvory),
                                     decoration: InputDecoration(
-                                      hintText: 'Enter custom amount in ₦',
+                                      hintText: 'Enter amount in ₦',
                                       hintStyle: TextStyle(color: ThemeColors.warmIvory.withValues(alpha: 0.3)),
                                       filled: true,
                                       fillColor: ThemeColors.midnightVelvet.withValues(alpha: 0.4),
@@ -512,22 +800,10 @@ class _RsvpPortalAndMonetizationWidgetState
                                     ),
                                   ),
                                 const SizedBox(height: 20.0),
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 50,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: ThemeColors.goldLeaf,
-                                      foregroundColor: ThemeColors.imperialBurgundySolid,
-                                      elevation: 4.0,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
-                                    ),
-                                    onPressed: () {},
-                                    child: Text(
-                                      'SPRAY NOW 💸',
-                                      style: GoogleFonts.plusJakartaSans(fontSize: 13.0, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-                                    ),
-                                  ),
+                                
+                                NeonGlowingButton(
+                                  text: 'SPRAY NOW 💸',
+                                  onPressed: () {},
                                 ),
                               ] else ...[
                                 Text(
@@ -593,7 +869,7 @@ class _RsvpPortalAndMonetizationWidgetState
                             ),
                             const SizedBox(height: 6.0),
                             Text(
-                              'Please let Naza & Victor know your status so they can share live streaming access and digital souvenir links with you.',
+                              'Please let Victor & Naza know your status so they can share live streaming access and digital souvenir links with you.',
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 13.0,
                                 color: ThemeColors.champagneSilk.withValues(alpha: 0.85),
@@ -659,209 +935,6 @@ class _RsvpPortalAndMonetizationWidgetState
                                       child: Text('SUBMIT REGRETS', style: GoogleFonts.plusJakartaSans(fontSize: 14.0, fontWeight: FontWeight.bold, letterSpacing: 2.0)),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                            
-                            const SizedBox(height: 36.0),
-                            
-                            Container(
-                              padding: const EdgeInsets.all(26.0),
-                              decoration: BoxDecoration(
-                                color: ThemeColors.midnightVelvet.withValues(alpha: 0.6),
-                                borderRadius: BorderRadius.circular(24.0),
-                                border: Border.all(
-                                  color: ThemeColors.goldLeaf.withValues(alpha: 0.2),
-                                  width: 1.0,
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Send a Token From Afar',
-                                              style: GoogleFonts.playfairDisplay(
-                                                fontSize: 22.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: ThemeColors.warmIvory,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4.0),
-                                            Text(
-                                              'Even in absence, send a digital cash gift to celebrate Naza & Victor.',
-                                              style: GoogleFonts.plusJakartaSans(
-                                                fontSize: 12.0,
-                                                color: ThemeColors.goldLeaf,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8.0),
-                                      Container(
-                                        padding: const EdgeInsets.all(10.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12.0),
-                                          border: Border.all(color: ThemeColors.goldLeaf),
-                                          color: ThemeColors.midnightVelvet.withValues(alpha: 0.4),
-                                        ),
-                                        child: const Icon(Icons.card_giftcard, color: ThemeColors.goldLeaf, size: 20.0),
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                                    child: Divider(color: Colors.white24, height: 1),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: InkWell(
-                                          onTap: () => setState(() => _declinedIsInstantGatewayMode = true),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
-                                            decoration: BoxDecoration(
-                                              color: _declinedIsInstantGatewayMode ? ThemeColors.goldLeaf : ThemeColors.midnightVelvet.withValues(alpha: 0.4),
-                                              borderRadius: BorderRadius.circular(8.0),
-                                              border: Border.all(color: ThemeColors.goldLeaf),
-                                            ),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              '⚡ Instant Gateway',
-                                              style: GoogleFonts.plusJakartaSans(
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: _declinedIsInstantGatewayMode ? ThemeColors.imperialBurgundySolid : ThemeColors.goldLeaf,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8.0),
-                                      Expanded(
-                                        child: InkWell(
-                                          onTap: () => setState(() => _declinedIsInstantGatewayMode = false),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
-                                            decoration: BoxDecoration(
-                                              color: !_declinedIsInstantGatewayMode ? ThemeColors.goldLeaf : ThemeColors.midnightVelvet.withValues(alpha: 0.4),
-                                              borderRadius: BorderRadius.circular(8.0),
-                                              border: Border.all(color: ThemeColors.goldLeaf),
-                                            ),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              '🏦 Direct Transfer',
-                                              style: GoogleFonts.plusJakartaSans(
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: !_declinedIsInstantGatewayMode ? ThemeColors.imperialBurgundySolid : ThemeColors.goldLeaf,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20.0),
-                                  if (_declinedIsInstantGatewayMode) ...[
-                                    Wrap(
-                                      alignment: WrapAlignment.spaceBetween,
-                                      crossAxisAlignment: WrapCrossAlignment.center,
-                                      spacing: 8.0,
-                                      runSpacing: 4.0,
-                                      children: [
-                                        Text(
-                                          'SELECT AMOUNT (₦)',
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontSize: 11.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: ThemeColors.goldLeaf,
-                                            letterSpacing: 1.2,
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: () => setState(() => _declinedIsCustomAmount = !_declinedIsCustomAmount),
-                                          child: Text(
-                                            _declinedIsCustomAmount ? 'Use Presets' : 'Enter Custom',
-                                            style: GoogleFonts.plusJakartaSans(
-                                              fontSize: 11.0,
-                                              decoration: TextDecoration.underline,
-                                              color: ThemeColors.goldLeaf,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10.0),
-                                    if (!_declinedIsCustomAmount)
-                                      Row(
-                                        children: [
-                                          _buildDeclinedTokenOption(5000),
-                                          const SizedBox(width: 8.0),
-                                          _buildDeclinedTokenOption(10000),
-                                          const SizedBox(width: 8.0),
-                                          _buildDeclinedTokenOption(25000),
-                                        ],
-                                      )
-                                    else
-                                      TextField(
-                                        controller: _declinedCustomAmountController,
-                                        keyboardType: TextInputType.number,
-                                        style: const TextStyle(color: ThemeColors.warmIvory),
-                                        decoration: InputDecoration(
-                                          hintText: 'Enter custom amount in ₦',
-                                          hintStyle: TextStyle(color: ThemeColors.warmIvory.withValues(alpha: 0.3)),
-                                          filled: true,
-                                          fillColor: ThemeColors.midnightVelvet.withValues(alpha: 0.4),
-                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0), borderSide: const BorderSide(color: ThemeColors.goldLeaf)),
-                                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0), borderSide: BorderSide(color: ThemeColors.goldLeaf.withValues(alpha: 0.5))),
-                                        ),
-                                      ),
-                                    const SizedBox(height: 20.0),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      height: 50,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: ThemeColors.goldLeaf,
-                                          foregroundColor: ThemeColors.imperialBurgundySolid,
-                                          elevation: 4.0,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
-                                        ),
-                                        onPressed: () {},
-                                        child: Text(
-                                          'SEND CASH GIFT 🎁',
-                                          style: GoogleFonts.plusJakartaSans(fontSize: 13.0, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-                                        ),
-                                      ),
-                                    ),
-                                  ] else ...[
-                                    Text(
-                                      'CHOOSE PREFERRED BANK ACCOUNT',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 11.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: ThemeColors.goldLeaf,
-                                        letterSpacing: 1.2,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10.0),
-                                    _buildDropdownContainer(
-                                      value: _declinedSelectedBank,
-                                      items: const [
-                                        'Opay Digital Services (9012345678)',
-                                        'Access Bank PLC (0123456789)',
-                                        'Moniepoint MFB (8123456789)',
-                                      ],
-                                      onChanged: (val) => setState(() => _declinedSelectedBank = val!),
-                                    ),
-                                  ],
                                 ],
                               ),
                             ),
@@ -1012,30 +1085,96 @@ class _RsvpPortalAndMonetizationWidgetState
       ),
     );
   }
+}
 
-  Widget _buildDeclinedTokenOption(int amount) {
-    final isSelected = _declinedTokenAmount == amount;
-    return Expanded(
-      child: InkWell(
-        onTap: () => setState(() => _declinedTokenAmount = amount),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
+/// Standalone NeonGlowingButton Widget Class
+class NeonGlowingButton extends StatefulWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final Color primaryColor;
+  final Color glowColor;
+  final double height;
+
+  const NeonGlowingButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.primaryColor = ThemeColors.goldLeaf,
+    this.glowColor = const Color(0xFFFFD700),
+    this.height = 50.0,
+  });
+
+  @override
+  State<NeonGlowingButton> createState() => _NeonGlowingButtonState();
+}
+
+class _NeonGlowingButtonState extends State<NeonGlowingButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: 2.0, end: 8.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          width: double.infinity,
+          height: widget.height,
           decoration: BoxDecoration(
-            color: isSelected ? ThemeColors.goldLeaf : ThemeColors.midnightVelvet.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(10.0),
-            border: Border.all(color: ThemeColors.goldLeaf),
+            borderRadius: BorderRadius.circular(25.0),
+            boxShadow: [
+              BoxShadow(
+                color: widget.glowColor.withValues(alpha: 0.5),
+                blurRadius: _animation.value * 2,
+                spreadRadius: _animation.value / 2,
+              ),
+            ],
           ),
-          alignment: Alignment.center,
-          child: Text(
-            '₦${amount.toString()}',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12.0,
-              fontWeight: FontWeight.bold,
-              color: isSelected ? ThemeColors.imperialBurgundySolid : ThemeColors.goldLeaf,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: widget.primaryColor,
+              foregroundColor: ThemeColors.imperialBurgundySolid,
+              elevation: 6.0,
+              shadowColor: widget.glowColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                side: BorderSide(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  width: 1.2,
+                ),
+              ),
+            ),
+            onPressed: widget.onPressed,
+            child: Text(
+              widget.text,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13.0,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2.0,
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

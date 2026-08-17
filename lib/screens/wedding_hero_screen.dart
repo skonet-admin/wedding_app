@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:wedding_app/pages/aso_ebi_attire_page.dart';
 import 'package:wedding_app/theme/theme_colors.dart';
 
 class WeddingHeroScreen extends StatefulWidget {
@@ -27,7 +26,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
     final isMobile = size.width < 800;
 
     return Container(
-      color: WeddingColors.midnightVelvet,
+      color: ThemeColors.midnightVelvet,
       child: Stack(
         children: [
           // 1. Background Image using hero_screen.jpg from assets/images/
@@ -39,7 +38,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
           ),
           Positioned.fill(
             child: Container(
-              color: WeddingColors.midnightVelvet.withValues(alpha: 0.25),
+              color: ThemeColors.midnightVelvet.withValues(alpha: 0.25),
             ),
           ),
 
@@ -66,13 +65,13 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(28.0),
                             decoration: BoxDecoration(
-                              color: WeddingColors.midnightVelvet.withValues(alpha: 0.70),
+                              color: ThemeColors.midnightVelvet.withValues(alpha: 0.70),
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  WeddingColors.imperialBurgundySolid.withValues(alpha: 0.55),
-                                  WeddingColors.midnightVelvet.withValues(alpha: 0.75),
+                                  ThemeColors.imperialBurgundySolid.withValues(alpha: 0.55),
+                                  ThemeColors.midnightVelvet.withValues(alpha: 0.75),
                                   Colors.black.withValues(alpha: 0.65),
                                 ],
                                 stops: const [0.0, 0.5, 1.0],
@@ -109,13 +108,13 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(30.0),
                                         border: Border.all(
-                                          color: _isCrestHovered ? WeddingColors.champagneSilk : WeddingColors.goldLeaf.withValues(alpha: 0.65), 
+                                          color: _isCrestHovered ? ThemeColors.champagneSilk : ThemeColors.goldLeaf.withValues(alpha: 0.65), 
                                           width: _isCrestHovered ? 1.8 : 1.2,
                                         ),
-                                        color: WeddingColors.imperialBurgundySolid.withValues(alpha: 0.4),
+                                        color: ThemeColors.imperialBurgundySolid.withValues(alpha: 0.4),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: WeddingColors.goldLeaf.withValues(alpha: _isCrestHovered ? 0.35 : 0.15),
+                                            color: ThemeColors.goldLeaf.withValues(alpha: _isCrestHovered ? 0.35 : 0.15),
                                             blurRadius: _isCrestHovered ? 24.0 : 16.0,
                                           ),
                                         ],
@@ -126,7 +125,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                           fontSize: isMobile ? 32.0 : 48.0,
                                           fontWeight: FontWeight.bold,
                                           letterSpacing: 4.0,
-                                          color: WeddingColors.champagneSilk,
+                                          color: ThemeColors.champagneSilk,
                                         ),
                                       ),
                                     ),
@@ -141,7 +140,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: isMobile ? 12.0 : 15.0,
                                     fontWeight: FontWeight.w700,
-                                    color: WeddingColors.goldLeaf,
+                                    color: ThemeColors.goldLeaf,
                                     letterSpacing: 3.5,
                                   ),
                                 ),
@@ -154,7 +153,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                   style: GoogleFonts.playfairDisplay(
                                     fontSize: isMobile ? 32.0 : 44.0,
                                     fontWeight: FontWeight.w600,
-                                    color: WeddingColors.warmIvory,
+                                    color: ThemeColors.warmIvory,
                                     height: 1.15,
                                   ),
                                 ),
@@ -168,7 +167,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                     fontSize: isMobile ? 11.0 : 13.0,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 2.0,
-                                    color: WeddingColors.champagneSilk.withValues(alpha: 0.8),
+                                    color: ThemeColors.champagneSilk.withValues(alpha: 0.8),
                                   ),
                                 ),
                                 const SizedBox(height: 4.0),
@@ -179,7 +178,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                     fontSize: isMobile ? 11.0 : 13.0,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 1.5,
-                                    color: WeddingColors.goldLeaf,
+                                    color: ThemeColors.goldLeaf,
                                   ),
                                 ),
                                 const SizedBox(height: 16.0),
@@ -187,12 +186,12 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                 // Ornamental Divider
                                 Row(
                                   children: [
-                                    Expanded(child: Container(height: 1, color: WeddingColors.goldLeaf.withValues(alpha: 0.4))),
+                                    Expanded(child: Container(height: 1, color: ThemeColors.goldLeaf.withValues(alpha: 0.4))),
                                     const Padding(
                                       padding: EdgeInsets.symmetric(horizontal: 12.0),
-                                      child: Icon(Icons.auto_awesome, size: 14.0, color: WeddingColors.goldLeaf),
+                                      child: Icon(Icons.auto_awesome, size: 14.0, color: ThemeColors.goldLeaf),
                                     ),
-                                    Expanded(child: Container(height: 1, color: WeddingColors.goldLeaf.withValues(alpha: 0.4))),
+                                    Expanded(child: Container(height: 1, color: ThemeColors.goldLeaf.withValues(alpha: 0.4))),
                                   ],
                                 ),
                                 const SizedBox(height: 16.0),
@@ -202,9 +201,9 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                   width: double.infinity,
                                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                                   decoration: BoxDecoration(
-                                    color: WeddingColors.imperialBurgundySolid.withValues(alpha: 0.35),
+                                    color: ThemeColors.imperialBurgundySolid.withValues(alpha: 0.35),
                                     borderRadius: BorderRadius.circular(30.0),
-                                    border: Border.all(color: WeddingColors.goldLeaf.withValues(alpha: 0.5), width: 1.0),
+                                    border: Border.all(color: ThemeColors.goldLeaf.withValues(alpha: 0.5), width: 1.0),
                                   ),
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
@@ -212,7 +211,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        const Icon(Icons.calendar_today, size: 14.0, color: WeddingColors.goldLeaf),
+                                        const Icon(Icons.calendar_today, size: 14.0, color: ThemeColors.goldLeaf),
                                         const SizedBox(width: 8.0),
                                         Text(
                                           'DECEMBER 04 & 05, 2026 · LAGOS, NIGERIA',
@@ -221,7 +220,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                             fontSize: isMobile ? 10.5 : 12.5,
                                             fontWeight: FontWeight.w600,
                                             letterSpacing: 1.5,
-                                            color: WeddingColors.goldLeaf,
+                                            color: ThemeColors.goldLeaf,
                                           ),
                                         ),
                                       ],
@@ -245,8 +244,9 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
                                 ),
                                 const SizedBox(height: 24.0),
 
-                                // Primary CTA Button
-                                HoverButton(
+                                // Primary Neon Glowing CTA Button
+                                NeonGlowingButton(
+                                  text: 'KINDLY RSVP ATTENDANCE',
                                   onPressed: widget.onOpenRsvpModal,
                                 ),
                               ],
@@ -270,9 +270,9 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
       width: isMobile ? 62.0 : 74.0,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       decoration: BoxDecoration(
-        color: WeddingColors.imperialBurgundySolid.withValues(alpha: 0.35),
+        color: ThemeColors.imperialBurgundySolid.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(color: WeddingColors.goldLeaf.withValues(alpha: 0.5), width: 1.0),
+        border: Border.all(color: ThemeColors.goldLeaf.withValues(alpha: 0.5), width: 1.0),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -282,7 +282,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
             style: GoogleFonts.playfairDisplay(
               fontSize: isMobile ? 18.0 : 22.0,
               fontWeight: FontWeight.bold,
-              color: WeddingColors.champagneSilk,
+              color: ThemeColors.champagneSilk,
             ),
           ),
           const SizedBox(height: 2.0),
@@ -292,7 +292,7 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
               fontSize: isMobile ? 8.5 : 9.5,
               fontWeight: FontWeight.w600,
               letterSpacing: 1.0,
-              color: WeddingColors.goldLeaf,
+              color: ThemeColors.goldLeaf,
             ),
           ),
         ],
@@ -301,71 +301,102 @@ class _WeddingHeroScreenState extends State<WeddingHeroScreen> {
   }
 }
 
-// Helper Widget for Interactive RSVP Button Hover/Active States
-class HoverButton extends StatefulWidget {
+/// Standalone NeonGlowingButton Widget Class
+class NeonGlowingButton extends StatefulWidget {
+  final String text;
   final VoidCallback onPressed;
+  final Color primaryColor;
+  final Color glowColor;
+  final double height;
 
-  const HoverButton({super.key, required this.onPressed});
+  const NeonGlowingButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.primaryColor = ThemeColors.goldLeaf,
+    this.glowColor = const Color(0xFFFFD700),
+    this.height = 50.0,
+  });
 
   @override
-  State<HoverButton> createState() => _HoverButtonState();
+  State<NeonGlowingButton> createState() => _NeonGlowingButtonState();
 }
 
-class _HoverButtonState extends State<HoverButton> {
-  bool _isHovered = false;
+class _NeonGlowingButtonState extends State<NeonGlowingButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: 2.0, end: 8.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedScale(
-        scale: _isHovered ? 1.03 : 1.0,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-        child: Container(
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
           width: double.infinity,
-          height: 50.0,
+          height: widget.height,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25.0),
             boxShadow: [
               BoxShadow(
-                color: WeddingColors.goldLeaf.withValues(alpha: _isHovered ? 0.6 : 0.35),
-                blurRadius: _isHovered ? 26.0 : 20.0,
-                spreadRadius: _isHovered ? 3.0 : 2.0,
-                offset: const Offset(0, 4),
+                color: widget.glowColor.withValues(alpha: 0.5),
+                blurRadius: _animation.value * 2,
+                spreadRadius: _animation.value / 2,
               ),
             ],
           ),
           child: ElevatedButton(
-            onPressed: widget.onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: _isHovered ? WeddingColors.champagneSilk : WeddingColors.goldLeaf,
-              foregroundColor: WeddingColors.imperialBurgundySolid,
-              elevation: 0.0,
+              backgroundColor: widget.primaryColor,
+              foregroundColor: ThemeColors.imperialBurgundySolid,
+              elevation: 6.0,
+              shadowColor: widget.glowColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25.0),
+                side: BorderSide(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  width: 1.2,
+                ),
               ),
             ),
+            onPressed: widget.onPressed,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.favorite, size: 16.0, color: WeddingColors.imperialBurgundySolid),
+                const Icon(Icons.favorite, size: 16.0, color: ThemeColors.imperialBurgundySolid),
                 const SizedBox(width: 8.0),
                 Text(
-                  'KINDLY RSVP ATTENDANCE',
+                  widget.text,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13.0,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                    color: WeddingColors.imperialBurgundySolid,
+                    letterSpacing: 2.0,
+                    color: ThemeColors.imperialBurgundySolid,
                   ),
                 ),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

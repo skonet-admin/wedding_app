@@ -54,12 +54,12 @@ class _OurStoryPageState extends State<OurStoryPage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: WeddingColors.midnightVelvet,
+        color: ThemeColors.midnightVelvet,
         image: DecorationImage(
           image: const AssetImage('assets/images/picture_frame.jpg'),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            WeddingColors.midnightVelvet.withValues(alpha: 0.85),
+            ThemeColors.midnightVelvet.withValues(alpha: 0.85),
             BlendMode.darken,
           ),
         ),
@@ -75,13 +75,13 @@ class _OurStoryPageState extends State<OurStoryPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 5.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(color: WeddingColors.goldLeaf, width: 1.0),
-                  color: WeddingColors.midnightVelvet.withValues(alpha: 0.85),
+                  border: Border.all(color: ThemeColors.goldLeaf, width: 1.0),
+                  color: ThemeColors.midnightVelvet.withValues(alpha: 0.85),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.book_outlined, size: 13.0, color: WeddingColors.goldLeaf),
+                    const Icon(Icons.book_outlined, size: 13.0, color: ThemeColors.goldLeaf),
                     const SizedBox(width: 6.0),
                     Text(
                       'DOCUMENTARY JOURNAL',
@@ -89,7 +89,7 @@ class _OurStoryPageState extends State<OurStoryPage> {
                         fontSize: 10.0,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.5,
-                        color: WeddingColors.goldLeaf,
+                        color: ThemeColors.goldLeaf,
                       ),
                     ),
                   ],
@@ -102,7 +102,7 @@ class _OurStoryPageState extends State<OurStoryPage> {
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 28.0,
                   fontWeight: FontWeight.bold,
-                  color: WeddingColors.champagneSilk,
+                  color: ThemeColors.champagneSilk,
                 ),
               ),
               const SizedBox(height: 2.0),
@@ -111,7 +111,7 @@ class _OurStoryPageState extends State<OurStoryPage> {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.greatVibes(
                   fontSize: 22.0,
-                  color: WeddingColors.goldLeaf,
+                  color: ThemeColors.goldLeaf,
                 ),
               ),
 
@@ -196,12 +196,12 @@ class _OurStoryPageState extends State<OurStoryPage> {
                             width: 175.0, height: 235.0, 
                             padding: const EdgeInsets.all(6.0),
                             decoration: BoxDecoration(
-                              color: WeddingColors.champagneSilk,
+                              color: ThemeColors.champagneSilk,
                               borderRadius: BorderRadius.circular(12.0),
-                              border: Border.all(color: WeddingColors.goldLeaf, width: 2.2),
+                              border: Border.all(color: ThemeColors.goldLeaf, width: 2.2),
                               boxShadow: [
                                 const BoxShadow(
-                                  color: WeddingColors.goldGlow,
+                                  color: ThemeColors.goldGlow,
                                   blurRadius: 28.0,
                                   spreadRadius: 4.0,
                                 ),
@@ -215,7 +215,7 @@ class _OurStoryPageState extends State<OurStoryPage> {
                             child: Container(
                               padding: const EdgeInsets.all(4.0),
                               decoration: BoxDecoration(
-                                border: Border.all(color: WeddingColors.goldLeaf.withValues(alpha: 0.4), width: 0.8),
+                                border: Border.all(color: ThemeColors.goldLeaf.withValues(alpha: 0.4), width: 0.8),
                                 borderRadius: BorderRadius.circular(6.0),
                               ),
                               child: Column(
@@ -233,7 +233,7 @@ class _OurStoryPageState extends State<OurStoryPage> {
                                   const SizedBox(height: 6.0),
                                   Text(
                                     'Naza & Victor', 
-                                    style: GoogleFonts.greatVibes(fontSize: 18.0, color: WeddingColors.midnightVelvet),
+                                    style: GoogleFonts.greatVibes(fontSize: 18.0, color: ThemeColors.midnightVelvet),
                                   ),
                                 ],
                               ),
@@ -248,35 +248,12 @@ class _OurStoryPageState extends State<OurStoryPage> {
 
               const SizedBox(height: 12.0),
 
-              // 3. Royal Seal Footer Crest (Adding a professional touch to fill and ground the bottom space)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.45),
-                  borderRadius: BorderRadius.circular(14.0),
-                  border: Border.all(color: WeddingColors.goldLeaf.withValues(alpha: 0.4), width: 1.0),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.auto_awesome, color: WeddingColors.goldLeaf, size: 14.0),
-                    const SizedBox(width: 8.0),
-                    Flexible(
-                      child: Text(
-                        'TAP ANY FRAME TO EXPLORE THE MEMOIRS',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 10.0,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
-                          color: WeddingColors.champagneSilk,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8.0),
-                    const Icon(Icons.auto_awesome, color: WeddingColors.goldLeaf, size: 14.0),
-                  ],
+              // 3. Royal Seal Footer Crest with Integrated Neon Glowing Button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: NeonGlowingButton(
+                  text: 'EXPLORE OUR MEMOIRS',
+                  onPressed: () => _openGalleryDialog(4),
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -291,9 +268,9 @@ class _OurStoryPageState extends State<OurStoryPage> {
     return Container(
       width: w, height: h, padding: const EdgeInsets.all(6.0),
       decoration: BoxDecoration(
-        color: WeddingColors.champagneSilk, 
+        color: ThemeColors.champagneSilk, 
         borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(color: WeddingColors.goldLeaf, width: 1.2),
+        border: Border.all(color: ThemeColors.goldLeaf, width: 1.2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.7),
@@ -305,7 +282,7 @@ class _OurStoryPageState extends State<OurStoryPage> {
       child: Container(
         padding: const EdgeInsets.all(3.0),
         decoration: BoxDecoration(
-          border: Border.all(color: WeddingColors.goldLeaf.withValues(alpha: 0.3), width: 0.6),
+          border: Border.all(color: ThemeColors.goldLeaf.withValues(alpha: 0.3), width: 0.6),
         ),
         child: Column(
           children: [
@@ -325,7 +302,7 @@ class _OurStoryPageState extends State<OurStoryPage> {
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 9.0, 
                 fontWeight: FontWeight.bold, 
-                color: WeddingColors.midnightVelvet,
+                color: ThemeColors.midnightVelvet,
               ),
             ),
           ],
@@ -398,10 +375,10 @@ class _GalleryDialogState extends State<_GalleryDialog> {
     final currentItem = widget.items[_currentIndex];
 
     return Dialog(
-      backgroundColor: WeddingColors.midnightVelvet,
+      backgroundColor: ThemeColors.midnightVelvet,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
-        side: const BorderSide(color: WeddingColors.goldLeaf, width: 1.5),
+        side: const BorderSide(color: ThemeColors.goldLeaf, width: 1.5),
       ),
       child: Container(
         padding: const EdgeInsets.all(16.0),
@@ -416,10 +393,10 @@ class _GalleryDialogState extends State<_GalleryDialog> {
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: WeddingColors.goldLeaf, width: 1),
+                    border: Border.all(color: ThemeColors.goldLeaf, width: 1),
                   ),
                   padding: const EdgeInsets.all(6),
-                  child: const Icon(Icons.close, color: WeddingColors.goldLeaf, size: 18),
+                  child: const Icon(Icons.close, color: ThemeColors.goldLeaf, size: 18),
                 ),
               ),
             ),
@@ -446,7 +423,7 @@ class _GalleryDialogState extends State<_GalleryDialog> {
                           width: double.infinity,
                           errorBuilder: (context, error, stackTrace) => Container(
                             color: Colors.black26,
-                            child: const Center(child: Icon(Icons.broken_image, color: WeddingColors.goldLeaf, size: 40)),
+                            child: const Center(child: Icon(Icons.broken_image, color: ThemeColors.goldLeaf, size: 40)),
                           ),
                         );
                       },
@@ -460,12 +437,12 @@ class _GalleryDialogState extends State<_GalleryDialog> {
                         onTap: _prevPage,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: WeddingColors.midnightVelvet.withValues(alpha: 0.7),
+                            color: ThemeColors.midnightVelvet.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
-                            border: Border.all(color: WeddingColors.goldLeaf),
+                            border: Border.all(color: ThemeColors.goldLeaf),
                           ),
                           padding: const EdgeInsets.all(8),
-                          child: const Icon(Icons.chevron_left, color: WeddingColors.goldLeaf, size: 24),
+                          child: const Icon(Icons.chevron_left, color: ThemeColors.goldLeaf, size: 24),
                         ),
                       ),
                     ),
@@ -477,12 +454,12 @@ class _GalleryDialogState extends State<_GalleryDialog> {
                         onTap: _nextPage,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: WeddingColors.midnightVelvet.withValues(alpha: 0.7),
+                            color: ThemeColors.midnightVelvet.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
-                            border: Border.all(color: WeddingColors.goldLeaf),
+                            border: Border.all(color: ThemeColors.goldLeaf),
                           ),
                           padding: const EdgeInsets.all(8),
-                          child: const Icon(Icons.chevron_right, color: WeddingColors.goldLeaf, size: 24),
+                          child: const Icon(Icons.chevron_right, color: ThemeColors.goldLeaf, size: 24),
                         ),
                       ),
                     ),
@@ -495,7 +472,7 @@ class _GalleryDialogState extends State<_GalleryDialog> {
             Text(
               currentItem['title']!, 
               style: GoogleFonts.playfairDisplay(
-                color: WeddingColors.champagneSilk, 
+                color: ThemeColors.champagneSilk, 
                 fontSize: 20.0, 
                 fontWeight: FontWeight.bold,
               ),
@@ -505,7 +482,7 @@ class _GalleryDialogState extends State<_GalleryDialog> {
               currentItem['caption']!, 
               textAlign: TextAlign.center, 
               style: GoogleFonts.plusJakartaSans(
-                color: WeddingColors.warmIvory, 
+                color: ThemeColors.warmIvory, 
                 fontSize: 13.0,
               ),
             ),
@@ -515,12 +492,12 @@ class _GalleryDialogState extends State<_GalleryDialog> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: WeddingColors.goldLeaf),
+                border: Border.all(color: ThemeColors.goldLeaf),
               ),
               child: Text(
                 '${_currentIndex + 1} / ${widget.items.length}',
                 style: GoogleFonts.plusJakartaSans(
-                  color: WeddingColors.goldLeaf,
+                  color: ThemeColors.goldLeaf,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 ),
@@ -529,6 +506,106 @@ class _GalleryDialogState extends State<_GalleryDialog> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Standalone NeonGlowingButton Widget Class
+class NeonGlowingButton extends StatefulWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final Color primaryColor;
+  final Color glowColor;
+  final double height;
+
+  const NeonGlowingButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.primaryColor = ThemeColors.goldLeaf,
+    this.glowColor = const Color(0xFFFFD700),
+    this.height = 50.0,
+  });
+
+  @override
+  State<NeonGlowingButton> createState() => _NeonGlowingButtonState();
+}
+
+class _NeonGlowingButtonState extends State<NeonGlowingButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: 2.0, end: 8.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          width: double.infinity,
+          height: widget.height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            boxShadow: [
+              BoxShadow(
+                color: widget.glowColor.withValues(alpha: 0.5),
+                blurRadius: _animation.value * 2,
+                spreadRadius: _animation.value / 2,
+              ),
+            ],
+          ),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: widget.primaryColor,
+              foregroundColor: ThemeColors.imperialBurgundySolid,
+              elevation: 6.0,
+              shadowColor: widget.glowColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                side: BorderSide(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  width: 1.2,
+                ),
+              ),
+            ),
+            onPressed: widget.onPressed,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.auto_awesome, size: 16.0, color: ThemeColors.imperialBurgundySolid),
+                const SizedBox(width: 8.0),
+                Text(
+                  widget.text,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
+                    color: ThemeColors.imperialBurgundySolid,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
