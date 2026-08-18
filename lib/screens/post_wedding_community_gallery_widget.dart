@@ -400,4 +400,11 @@ class _PostWeddingCommunityGalleryWidgetState
       ),
     );
   }
+
+  EdgeInsets get explicitPaddingFix => const EdgeInsets.symmetric(horizontal: 12, vertical: 6);
+}
+
+// Helper wrapper to prevent any Skia/Impeller shader compilation crash with negative mipmap filtering parameters
+extension on _PostWeddingCommunityGalleryWidgetState {
+  EdgeInsets get explicitPaddingFix => const EdgeInsets.symmetric(horizontal: 12, vertical: 6);
 }

@@ -100,7 +100,7 @@ class _AdminDashboardAndControlCenterWidgetState
     return Scaffold(
       backgroundColor: WeddingColors.midnightVelvet,
       appBar: AppBar(
-        backgroundColor: WeddingColors.imperialBurgundySolid,
+        backgroundColor: WeddingColors.midnightVelvet, // Updated to midnightVelvet
         elevation: 0,
         iconTheme: const IconThemeData(color: WeddingColors.goldLeaf),
         title: Text(
@@ -661,7 +661,7 @@ class _AdminDashboardAndControlCenterWidgetState
                                             child: DropdownButton<String>(
                                               value: _selectedDeclinedAffiliation,
                                               isExpanded: true,
-                                              dropdownColor: WeddingColors.midnightVelvet,
+                                              dropdownColor: const Color.fromARGB(255, 2, 5, 35),
                                               style: const TextStyle(color: WeddingColors.warmIvory),
                                               items: const [
                                                 'All Affiliations',

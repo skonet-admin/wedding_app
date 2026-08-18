@@ -92,6 +92,11 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushNamed(context, '/community-gallery');
   }
 
+  // Open the end drawer
+  void _openDrawer() {
+    _scaffoldKey.currentState?.openEndDrawer();
+  }
+
   // Safe scroll position helper
   void _scrollToPosition(double offset) {
     if (_scrollController.hasClients) {
@@ -281,7 +286,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-      // Use a Stack so the global glassmorphic header floats persistently over the scrolling body
+      // Use a Stack so the global header floats persistently over the scrolling body
       body: Stack(
         children: [
           // 1. Main Page ListView Content (Scrolls under the floating header)
@@ -292,9 +297,7 @@ class _HomePageState extends State<HomePage> {
                 height: screenHeight,
                 child: WeddingHeroScreen(
                   onOpenRsvpModal: _openRsvpModal,
-                  onOpenDrawer: () {
-                    _scaffoldKey.currentState?.openEndDrawer();
-                  },
+                  onOpenDrawer: _openDrawer,
                 ),
               ),
               const OurStoryPage(),
@@ -305,7 +308,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
 
-          // 2. Global Sticky Header Bar with Glassmorphic Blur
+          // 2. Global Sticky Header Bar with Solid Background Color
           Positioned(
             top: 0,
             left: 0,
@@ -314,7 +317,7 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
                 decoration: BoxDecoration(
-                  color: ThemeColors.midnightVelvet.withValues(alpha: 0.8),
+                  color: ThemeColors.midnightVelvet,
                   border: Border(
                     bottom: BorderSide(
                       color: ThemeColors.goldLeaf.withValues(alpha: 0.4),
@@ -334,7 +337,7 @@ class _HomePageState extends State<HomePage> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(color: ThemeColors.goldLeaf, width: 1.0),
-                              color: ThemeColors.midnightVelvet.withValues(alpha: 0.3),
+                              color: ThemeColors.midnightVelvet,
                             ),
                             child: Text(
                               'V♥N',
